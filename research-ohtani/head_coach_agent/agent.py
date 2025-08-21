@@ -4,31 +4,27 @@
 
 from google.adk.agents import SequentialAgent, ParallelAgent, LoopAgent
 
-from .subagents.cpu_info_agent import cpu_info_agent
-from .subagents.disk_info_agent import disk_info_agent
-from .subagents.memory_info_agent import memory_info_agent
-from .subagents.synthesizer_agent import system_report_synthesizer
+from .subagents.sql_coach_agent import sql_coach_agent
+from .subagents.query_coach_agent import query_coach_agent
+from .subagents.scout_coach_agent import scout_coach_agent
+from .subagents.analytics_coach_agent import analytics_coach_agent
 
-# --- 1. Create Parallel Agent to ... ---
-system_info_gatherer = ParallelAgent(
-    name="system_info_gatherer",
-    sub_agents=[cpu_info_agent, memory_info_agent, disk_info_agent],
+# --- 1. Create Loop Agent to ... ---
+data_coach_agent = LoopAgent(
+    name="data_coach_agent",
+    sub_agents=[sql_coach_agent, query_coach_agent],
 )
 
-# --- 1. Create Parallel Agent to ... ---
-system_info_gatherer = ParallelAgent(
-    name="system_info_gatherer",
-    sub_agents=[cpu_info_agent, memory_info_agent, disk_info_agent],
+# --- 2. Create Parallel Agent to ... ---
+reference_coach_agent = ParallelAgent(
+    name="reference_coach_agent",
+    sub_agents=[data_coach_agent, scout_coach_agent],
 )
 
-# --- 1. Create Parallel Agent to ... ---
-system_info_gatherer = ParallelAgent(
-    name="system_info_gatherer",
-    sub_agents=[cpu_info_agent, memory_info_agent, disk_info_agent],
-)
-
-# --- 2. Create Sequential Agent to ... ---
+# --- 3. Create Sequential Agent to ... ---
 root_agent = SequentialAgent(
     name="head_coach_agent",
-    sub_agents=[system_info_gatherer, system_report_synthesizer],
+    sub_agents=[reference_coach_agent, analytics_coach_agent],
+    description="",
+    instructions="",
 )
