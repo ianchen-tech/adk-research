@@ -1,32 +1,31 @@
 """
-Lead Validator Agent
+潛在客戶驗證代理
 
-This agent is responsible for validating if a lead has all the necessary information
-for qualification.
+此代理負責驗證潛在客戶是否具有資格審查所需的所有必要資訊。
 """
 
 from google.adk.agents import LlmAgent
 
-# --- Constants ---
+# --- 常數 ---
 GEMINI_MODEL = "gemini-2.0-flash"
 
-# Create the validator agent
+# 建立驗證代理
 lead_validator_agent = LlmAgent(
     name="LeadValidatorAgent",
     model=GEMINI_MODEL,
-    instruction="""You are a Lead Validation AI.
+    instruction="""您是潛在客戶驗證 AI。
     
-    Examine the lead information provided by the user and determine if it's complete enough for qualification.
-    A complete lead should include:
-    - Contact information (name, email or phone)
-    - Some indication of interest or need
-    - Company or context information if applicable
+    檢查使用者提供的潛在客戶資訊，並判斷是否足夠完整以進行資格審查。
+    完整的潛在客戶應包括：
+    - 聯絡資訊（姓名、電子郵件或電話）
+    - 某些興趣或需求的表示
+    - 公司或背景資訊（如適用）
     
-    Output ONLY 'valid' or 'invalid' with a single reason if invalid.
+    僅輸出 'valid' 或 'invalid'，如果無效則提供單一原因。
     
-    Example valid output: 'valid'
-    Example invalid output: 'invalid: missing contact information'
+    有效輸出範例：'valid'
+    無效輸出範例：'invalid: missing contact information'
     """,
-    description="Validates lead information for completeness.",
+    description="驗證潛在客戶資訊的完整性。",
     output_key="validation_status",
 )

@@ -1,7 +1,6 @@
-"""
-Memory Information Tool
+"""記憶體資訊工具
 
-This module provides a tool for gathering memory information.
+此模組提供收集記憶體資訊的工具。
 """
 
 import time
@@ -12,13 +11,13 @@ import psutil
 
 def get_memory_info() -> Dict[str, Any]:
     """
-    Gather memory information including RAM and swap usage.
+    收集記憶體資訊，包括 RAM 和交換記憶體使用情況。
 
     Returns:
-        Dict[str, Any]: Dictionary with memory information structured for ADK
+        Dict[str, Any]: 為 ADK 結構化的記憶體資訊字典
     """
     try:
-        # Get memory information
+        # 取得記憶體資訊
         memory = psutil.virtual_memory()
         swap = psutil.swap_memory()
 
@@ -32,13 +31,13 @@ def get_memory_info() -> Dict[str, Any]:
             "swap_percentage": f"{swap.percent:.1f}%",
         }
 
-        # Calculate stats
+        # 計算統計資料
         memory_usage = memory.percent
         swap_usage = swap.percent
         high_memory_usage = memory_usage > 80
         high_swap_usage = swap_usage > 80
 
-        # Format for ADK tool return structure
+        # 格式化為 ADK 工具返回結構
         return {
             "result": memory_info,
             "stats": {
@@ -51,14 +50,14 @@ def get_memory_info() -> Dict[str, Any]:
                 "data_format": "dictionary",
                 "collection_timestamp": time.time(),
                 "performance_concern": (
-                    "High memory usage detected" if high_memory_usage else None
+                    "偵測到高記憶體使用率" if high_memory_usage else None
                 ),
-                "swap_concern": "High swap usage detected" if high_swap_usage else None,
+                "swap_concern": "偵測到高交換記憶體使用率" if high_swap_usage else None,
             },
         }
     except Exception as e:
         return {
-            "result": {"error": f"Failed to gather memory information: {str(e)}"},
+            "result": {"error": f"無法收集記憶體資訊：{str(e)}"},
             "stats": {"success": False},
             "additional_info": {"error_type": str(type(e).__name__)},
         }

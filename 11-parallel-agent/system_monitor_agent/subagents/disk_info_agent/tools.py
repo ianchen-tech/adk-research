@@ -1,7 +1,6 @@
-"""
-Disk Information Tool
+"""磁碟資訊工具
 
-This module provides a tool for gathering disk information.
+此模組提供收集磁碟資訊的工具。
 """
 
 import time
@@ -12,13 +11,13 @@ import psutil
 
 def get_disk_info() -> Dict[str, Any]:
     """
-    Gather disk information including partitions and usage.
+    收集磁碟資訊，包括分割區和使用情況。
 
     Returns:
-        Dict[str, Any]: Dictionary with disk information structured for ADK
+        Dict[str, Any]: 為 ADK 結構化的磁碟資訊字典
     """
     try:
-        # Get disk information
+        # 取得磁碟資訊
         disk_info = {"partitions": []}
         partitions_over_threshold = []
         total_space = 0
@@ -28,13 +27,13 @@ def get_disk_info() -> Dict[str, Any]:
             try:
                 partition_usage = psutil.disk_usage(partition.mountpoint)
 
-                # Track high usage partitions
+                # 追蹤高使用率分割區
                 if partition_usage.percent > 85:
                     partitions_over_threshold.append(
                         f"{partition.mountpoint} ({partition_usage.percent:.1f}%)"
                     )
 
-                # Add to totals
+                # 加入總計
                 total_space += partition_usage.total
                 used_space += partition_usage.used
 
@@ -50,15 +49,15 @@ def get_disk_info() -> Dict[str, Any]:
                     }
                 )
             except (PermissionError, FileNotFoundError):
-                # Some partitions may not be accessible
+                # 某些分割區可能無法存取
                 pass
 
-        # Calculate overall disk stats
+        # 計算整體磁碟統計
         overall_usage_percent = (
             (used_space / total_space * 100) if total_space > 0 else 0
         )
 
-        # Format for ADK tool return structure
+        # 格式化為 ADK 工具返回結構
         return {
             "result": disk_info,
             "stats": {
@@ -78,7 +77,7 @@ def get_disk_info() -> Dict[str, Any]:
         }
     except Exception as e:
         return {
-            "result": {"error": f"Failed to gather disk information: {str(e)}"},
+            "result": {"error": f"無法收集磁碟資訊：{str(e)}"},
             "stats": {"success": False},
             "additional_info": {"error_type": str(type(e).__name__)},
         }

@@ -1,32 +1,31 @@
 """
-Lead Scorer Agent
+潛在客戶評分代理
 
-This agent is responsible for scoring a lead's qualification level
-based on various criteria.
+此代理負責根據各種標準為潛在客戶的資格等級評分。
 """
 
 from google.adk.agents import LlmAgent
 
-# --- Constants ---
+# --- 常數 ---
 GEMINI_MODEL = "gemini-2.0-flash"
 
-# Create the scorer agent
+# 建立評分代理
 lead_scorer_agent = LlmAgent(
     name="LeadScorerAgent",
     model=GEMINI_MODEL,
-    instruction="""You are a Lead Scoring AI.
+    instruction="""您是潛在客戶評分 AI。
     
-    Analyze the lead information and assign a qualification score from 1-10 based on:
-    - Expressed need (urgency/clarity of problem)
-    - Decision-making authority
-    - Budget indicators
-    - Timeline indicators
+    分析潛在客戶資訊並根據以下標準分配 1-10 的資格分數：
+    - 表達的需求（問題的緊急性/清晰度）
+    - 決策權威
+    - 預算指標
+    - 時間表指標
     
-    Output ONLY a numeric score and ONE sentence justification.
+    僅輸出數字分數和一句理由說明。
     
-    Example output: '8: Decision maker with clear budget and immediate need'
-    Example output: '3: Vague interest with no timeline or budget mentioned'
+    輸出範例：'8: 具有明確預算和即時需求的決策者'
+    輸出範例：'3: 模糊興趣，未提及時間表或預算'
     """,
-    description="Scores qualified leads on a scale of 1-10.",
+    description="以 1-10 的等級為合格潛在客戶評分。",
     output_key="lead_score",
 )

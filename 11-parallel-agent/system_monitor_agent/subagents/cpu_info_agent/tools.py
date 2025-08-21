@@ -1,7 +1,6 @@
-"""
-CPU Information Tool
+"""CPU 資訊工具
 
-This module provides a tool for gathering CPU information.
+此模組提供收集 CPU 資訊的工具。
 """
 
 import time
@@ -12,13 +11,13 @@ import psutil
 
 def get_cpu_info() -> Dict[str, Any]:
     """
-    Gather CPU information including core count and usage.
+    收集 CPU 資訊，包括核心數量和使用情況。
 
     Returns:
-        Dict[str, Any]: Dictionary with CPU information structured for ADK
+        Dict[str, Any]: 為 ADK 結構化的 CPU 資訊字典
     """
     try:
-        # Get CPU information
+        # 取得 CPU 資訊
         cpu_info = {
             "physical_cores": psutil.cpu_count(logical=False),
             "logical_cores": psutil.cpu_count(logical=True),
@@ -31,11 +30,11 @@ def get_cpu_info() -> Dict[str, Any]:
             "avg_cpu_usage": f"{psutil.cpu_percent(interval=1):.1f}%",
         }
 
-        # Calculate some stats for the result summary
+        # 計算結果摘要的一些統計資料
         avg_usage = float(cpu_info["avg_cpu_usage"].strip("%"))
         high_usage = avg_usage > 80
 
-        # Format for ADK tool return structure
+        # 格式化為 ADK 工具返回結構
         return {
             "result": cpu_info,
             "stats": {
@@ -48,13 +47,13 @@ def get_cpu_info() -> Dict[str, Any]:
                 "data_format": "dictionary",
                 "collection_timestamp": time.time(),
                 "performance_concern": (
-                    "High CPU usage detected" if high_usage else None
+                    "偵測到高 CPU 使用率" if high_usage else None
                 ),
             },
         }
     except Exception as e:
         return {
-            "result": {"error": f"Failed to gather CPU information: {str(e)}"},
+            "result": {"error": f"無法收集 CPU 資訊：{str(e)}"},
             "stats": {"success": False},
             "additional_info": {"error_type": str(type(e).__name__)},
         }
