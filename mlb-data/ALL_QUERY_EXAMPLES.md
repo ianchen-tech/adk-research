@@ -56,8 +56,8 @@ LIMIT 5;
 
 **說明：** 顯示最近5場打擊數據，重點關注打擊率和OPS值的變化趨勢。at_bats（打數）和hits（安打數）是計算打擊率的基礎數據，而home_runs（全壘打）和rbis（打點）則直接反映攻擊貢獻。batting_avg（打擊率）提供即時的安打成功率，而OPS（上壘率加長打率）則是更全面的攻擊指標，結合了上壘能力和長打威力。透過觀察這些指標在最近幾場比賽中的變化，可以識別出打擊狀態的趨勢，例如是否正在回溫、是否遭遇低潮，或者是否維持穩定的高水準表現。
 
-### 1.3 查看賽季統計概覽
-**使用情境：** 快速了解各賽季的整體表現。這個查詢提供了大谷翔平職業生涯的宏觀視角，適用於進行年度績效評估、合約談判參考、媒體製作生涯回顧專題，以及球迷了解偶像的職業發展軌跡。對於球團管理層而言，這些數據有助於評估球員價值和未來投資決策。對於統計學家和棒球分析師，這是進行跨年度比較分析的基礎數據，可以識別出表現趨勢、巔峰期和可能的衰退跡象。
+### 1.3 打擊賽季統計概覽
+**使用情境：** 評估各賽季打擊表現和攻擊貢獻。這個查詢適用於年度打擊績效評估、打者價值分析、媒體製作打擊專題報導，以及球迷追蹤偶像的打擊發展軌跡。對於球團管理層而言，這些數據有助於評估打者的市場價值和薪資談判參考。對於打擊教練，可以識別出表現趨勢和需要調整的技術環節。
 
 ```sql
 -- 打擊賽季統計
@@ -71,7 +71,14 @@ SELECT
     ops
 FROM batting_season_stats 
 ORDER BY season DESC;
+```
 
+**說明：** 提供各賽季打擊核心數據概覽，便於進行年度間比較。查詢從batting_season_stats表格提取數據，關注games（出賽場次）、home_runs（全壘打）、rbis（打點）、avg（打擊率）和ops（攻擊指數）等關鍵指標。這些數據能夠反映出每個賽季的攻擊貢獻和打擊穩定性。透過DESC排序，最新賽季的數據會優先顯示，便於追蹤最近的打擊表現變化。
+
+### 1.4 投手賽季統計概覽
+**使用情境：** 評估各賽季投手表現和工作負荷。這個查詢適用於年度投手績效評估、先發輪值規劃、投手健康狀況監控，以及制定來季投球策略。對於投手教練而言，這些數據有助於分析投球效率和耐久性。對於醫療團隊，可以評估工作量對球員健康的影響。對於對手球隊，這是制定打擊策略的重要參考資料。
+
+```sql
 -- 投手賽季統計
 SELECT 
     season,
@@ -86,7 +93,7 @@ FROM pitching_season_stats
 ORDER BY season DESC;
 ```
 
-**說明：** 提供各賽季的核心數據概覽，便於進行年度間比較。查詢分為投打兩個部分，分別從batting_season_stats和pitching_season_stats表格提取數據。打擊部分關注games（出賽場次）、home_runs（全壘打）、rbis（打點）、avg（打擊率）和ops（攻擊指數）等關鍵指標，這些數據能夠反映出每個賽季的攻擊貢獻和穩定性。投手部分則聚焦於games_started（先發場次）、wins/losses（勝敗紀錄）、era（防禦率）、strikeouts（三振）和innings_pitched（投球局數）等核心數據，展現投手的工作量和效率。透過DESC排序，最新賽季的數據會優先顯示，便於追蹤最近的表現變化。
+**說明：** 提供各賽季投手核心數據概覽，便於進行年度間比較。查詢從pitching_season_stats表格提取數據，聚焦於games_started（先發場次）、wins/losses（勝敗紀錄）、era（防禦率）、strikeouts（三振）和innings_pitched（投球局數）等核心數據。這些指標展現投手的工作量、勝負貢獻和投球效率。透過DESC排序，最新賽季的數據會優先顯示，便於追蹤最近的投手表現變化。
 
 ---
 
@@ -230,38 +237,7 @@ ORDER BY bs.season DESC;
 
 **說明：** 整合各賽季的投打數據，提供完整的二刀流表現概覽，包含每9局三振率等進階指標。這個JOIN查詢以season為關聯鍵，確保投打數據來自同一賽季。batting_games和pitching_starts的對比顯示了大谷翔平在兩個角色間的時間分配。k_per_9（每9局三振率）是評估投手壓制力的標準化指標，便於跨賽季比較。透過這個查詢，可以觀察到大谷翔平是否在某些賽季更專注於投球或打擊，以及他的二刀流能力是否隨時間而進化。
 
-### 4.2 同場比賽投打表現關聯
-**使用情境：** 分析大谷翔平在同一場比賽中擔任投手和打擊手時的表現關聯性。這個查詢對於理解二刀流球員的體能分配和專注力管理具有重要意義。教練團可以透過這些數據來優化大谷翔平的使用策略，例如在他投球表現優異的比賽中，打擊表現是否也會相對較好，或者是否存在體能上的權衡關係。這類分析也有助於運動科學研究，探討在同一場比賽中承擔雙重角色對運動員表現的影響。
-
-```sql
--- 同場比賽投打表現關聯分析
-SELECT 
-    p.recent_game_rank,
-    p.opponent,
-    p.innings_pitched,
-    p.strikeouts as pitching_strikeouts,
-    p.era as game_era,
-    p.decision,
-    b.at_bats,
-    b.hits,
-    b.home_runs,
-    b.rbis,
-    b.batting_avg as game_batting_avg,
-    CASE 
-        WHEN p.era <= 3.00 AND b.batting_avg >= 0.300 THEN '投打雙優'
-        WHEN p.era <= 3.00 AND b.batting_avg < 0.300 THEN '投優打普'
-        WHEN p.era > 3.00 AND b.batting_avg >= 0.300 THEN '投普打優'
-        ELSE '投打雙普'
-    END as performance_category
-FROM pitching_game_logs p
-INNER JOIN batting_game_logs b ON p.recent_game_rank = b.recent_game_rank
-WHERE p.innings_pitched > 0
-ORDER BY p.recent_game_rank ASC;
-```
-
-**說明：** 透過recent_game_rank關聯同場比賽的投打數據，並建立表現分類系統。這個查詢使用INNER JOIN確保只顯示大谷翔平同時擔任投手和打擊手的比賽。performance_category欄位將每場比賽分為四個類別，有助於快速識別不同類型的表現模式。這種分類方式可以幫助分析師發現大谷翔平在體能分配上的規律，例如是否在投球用力較多的比賽中打擊表現會受到影響。
-
-### 4.3 賽季投打效率比較
+### 4.2 賽季投打效率比較
 **使用情境：** 比較大谷翔平在不同賽季中投手和打擊效率的相對變化。這個分析有助於了解他的職業發展重心是否有所轉移，以及在哪些賽季他在投打兩方面達到了最佳平衡。對於長期追蹤大谷翔平職業生涯的分析師而言，這類數據可以揭示他的技能發展軌跡和適應策略。
 
 ```sql
@@ -288,46 +264,7 @@ ORDER BY combined_efficiency_score DESC;
 
 **說明：** 計算各賽季的投打效率指標並建立綜合評分系統。hr_per_game和rbi_per_game標準化了打擊貢獻，k_per_start和ip_per_start則標準化了投手工作量和效率。combined_efficiency_score是一個創新的綜合指標，將OPS和ERA轉換為可比較的數值並取平均，提供了評估二刀流整體表現的量化工具。這個評分系統可以幫助識別大谷翔平的巔峰賽季和相對低潮期。
 
-### 4.4 投打表現趨勢對比
-**使用情境：** 分析大谷翔平投手和打擊表現的時間趨勢是否存在關聯性。這個查詢有助於了解他在賽季中的狀態變化模式，例如是否在賽季初期更專注於投球，而在賽季後期更專注於打擊。對於制定長期發展策略的教練團而言，這類趨勢分析可以提供寶貴的洞察，幫助優化訓練計畫和比賽安排。
-
-```sql
--- 投打表現時間趨勢對比
-SELECT 
-    CASE 
-        WHEN p.recent_game_rank <= 10 THEN '最近10場'
-        WHEN p.recent_game_rank <= 20 THEN '第11-20場'
-        WHEN p.recent_game_rank <= 30 THEN '第21-30場'
-        ELSE '30場以前'
-    END as time_period,
-    COUNT(p.recent_game_rank) as pitching_games,
-    COUNT(b.recent_game_rank) as batting_games,
-    ROUND(AVG(p.era), 2) as avg_era,
-    ROUND(AVG(p.strikeouts), 1) as avg_strikeouts,
-    ROUND(AVG(b.batting_avg), 3) as avg_batting_avg,
-    ROUND(AVG(b.ops), 3) as avg_ops,
-    SUM(b.home_runs) as total_hrs_in_period
-FROM pitching_game_logs p
-FULL OUTER JOIN batting_game_logs b ON p.recent_game_rank = b.recent_game_rank
-GROUP BY 
-    CASE 
-        WHEN COALESCE(p.recent_game_rank, b.recent_game_rank) <= 10 THEN '最近10場'
-        WHEN COALESCE(p.recent_game_rank, b.recent_game_rank) <= 20 THEN '第11-20場'
-        WHEN COALESCE(p.recent_game_rank, b.recent_game_rank) <= 30 THEN '第21-30場'
-        ELSE '30場以前'
-    END
-ORDER BY 
-    CASE 
-        WHEN time_period = '最近10場' THEN 1
-        WHEN time_period = '第11-20場' THEN 2
-        WHEN time_period = '第21-30場' THEN 3
-        ELSE 4
-    END;
-```
-
-**說明：** 使用FULL OUTER JOIN結合投打數據，按時間段分析表現趨勢。COALESCE函數處理可能的NULL值，確保即使某個時間段只有投球或只有打擊數據也能正確分組。這個查詢可以揭示大谷翔平在不同時期的專注重點和表現水準變化，有助於識別他的最佳狀態期和調整期。
-
-### 4.5 對手強度與投打表現關聯
+### 4.3 對手強度與投打表現關聯
 **使用情境：** 分析大谷翔平面對不同強度對手時的投打表現差異。這個查詢對於制定對戰策略和評估適應能力具有重要價值。教練團可以透過這些數據了解大谷翔平在面對強隊時是否能維持高水準表現，或者是否需要特別的準備和調整。
 
 ```sql
