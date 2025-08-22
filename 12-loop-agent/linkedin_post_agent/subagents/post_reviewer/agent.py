@@ -1,17 +1,16 @@
-"""
-LinkedIn Post Reviewer Agent
+"""LinkedIn 貼文審查器代理
 
-This agent reviews LinkedIn posts for quality and provides feedback.
+此代理審查 LinkedIn 貼文的品質並提供回饋。
 """
 
 from google.adk.agents.llm_agent import LlmAgent
 
 from .tools import count_characters, exit_loop
 
-# Constants
+# 常數
 GEMINI_MODEL = "gemini-2.0-flash"
 
-# Define the Post Reviewer Agent
+# 定義貼文審查器代理
 post_reviewer = LlmAgent(
     name="PostReviewer",
     model=GEMINI_MODEL,

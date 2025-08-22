@@ -1,15 +1,14 @@
-"""
-LinkedIn Post Refiner Agent
+"""LinkedIn 貼文精煉器代理
 
-This agent refines LinkedIn posts based on review feedback.
+此代理根據審查回饋精煉 LinkedIn 貼文。
 """
 
 from google.adk.agents.llm_agent import LlmAgent
 
-# Constants
+# 常數
 GEMINI_MODEL = "gemini-2.0-flash"
 
-# Define the Post Refiner Agent
+# 定義貼文精煉器代理
 post_refiner = LlmAgent(
     name="PostRefinerAgent",
     model=GEMINI_MODEL,
@@ -45,6 +44,6 @@ post_refiner = LlmAgent(
     - Output ONLY the refined post content
     - Do not add explanations or justifications
     """,
-    description="Refines LinkedIn posts based on feedback to improve quality",
+    description="根據回饋精煉 LinkedIn 貼文以提升品質",
     output_key="current_post",
 )

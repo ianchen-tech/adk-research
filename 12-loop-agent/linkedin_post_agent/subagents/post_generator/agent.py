@@ -1,15 +1,14 @@
-"""
-LinkedIn Post Generator Agent
+"""LinkedIn 貼文生成器代理
 
-This agent generates the initial LinkedIn post before refinement.
+此代理在精煉前生成初始的 LinkedIn 貼文。
 """
 
 from google.adk.agents.llm_agent import LlmAgent
 
-# Constants
+# 常數
 GEMINI_MODEL = "gemini-2.0-flash"
 
-# Define the Initial Post Generator Agent
+# 定義初始貼文生成器代理
 initial_post_generator = LlmAgent(
     name="InitialPostGenerator",
     model=GEMINI_MODEL,
@@ -48,6 +47,6 @@ initial_post_generator = LlmAgent(
     - Return ONLY the post content
     - Do not add formatting markers or explanations
     """,
-    description="Generates the initial LinkedIn post to start the refinement process",
+    description="生成初始 LinkedIn 貼文以開始精煉過程",
     output_key="current_post",
 )
