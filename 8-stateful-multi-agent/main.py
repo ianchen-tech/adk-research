@@ -1,6 +1,6 @@
 import asyncio
 
-# Import the main customer service agent
+# 匯入主要的客戶服務代理
 from customer_service_agent.agent import customer_service_agent
 from dotenv import load_dotenv
 from google.adk.runners import Runner
@@ -9,13 +9,13 @@ from utils import add_user_query_to_history, call_agent_async
 
 load_dotenv()
 
-# ===== PART 1: Initialize In-Memory Session Service =====
-# Using in-memory storage for this example (non-persistent)
+# ===== 第一部分：初始化記憶體內會話服務 =====
+# 此範例使用記憶體內儲存（非持久性）
 session_service = InMemorySessionService()
 
 
-# ===== PART 2: Define Initial State =====
-# This will be used when creating a new session
+# ===== 第二部分：定義初始狀態 =====
+# 這將在建立新會話時使用
 initial_state = {
     "user_name": "Brandon Hancock",
     "purchased_courses": [],
@@ -24,61 +24,61 @@ initial_state = {
 
 
 async def main_async():
-    # Setup constants
-    APP_NAME = "Customer Support"
+    # 設定常數
+    APP_NAME = "客戶支援"
     USER_ID = "aiwithbrandon"
 
-    # ===== PART 3: Session Creation =====
-    # Create a new session with initial state
+    # ===== 第三部分：會話建立 =====
+    # 使用初始狀態建立新會話
     new_session = session_service.create_session(
         app_name=APP_NAME,
         user_id=USER_ID,
         state=initial_state,
     )
     SESSION_ID = new_session.id
-    print(f"Created new session: {SESSION_ID}")
+    print(f"已建立新會話：{SESSION_ID}")
 
-    # ===== PART 4: Agent Runner Setup =====
-    # Create a runner with the main customer service agent
+    # ===== 第四部分：代理執行器設定 =====
+    # 使用主要客戶服務代理建立執行器
     runner = Runner(
         agent=customer_service_agent,
         app_name=APP_NAME,
         session_service=session_service,
     )
 
-    # ===== PART 5: Interactive Conversation Loop =====
-    print("\nWelcome to Customer Service Chat!")
-    print("Type 'exit' or 'quit' to end the conversation.\n")
+    # ===== 第五部分：互動對話迴圈 =====
+    print("\n歡迎使用客戶服務聊天！")
+    print("輸入 'exit' 或 'quit' 結束對話。\n")
 
     while True:
-        # Get user input
-        user_input = input("You: ")
+        # 取得使用者輸入
+        user_input = input("您：")
 
-        # Check if user wants to exit
+        # 檢查使用者是否想要退出
         if user_input.lower() in ["exit", "quit"]:
-            print("Ending conversation. Goodbye!")
+            print("結束對話。再見！")
             break
 
-        # Update interaction history with the user's query
+        # 使用使用者的查詢更新互動歷史
         add_user_query_to_history(
             session_service, APP_NAME, USER_ID, SESSION_ID, user_input
         )
 
-        # Process the user query through the agent
+        # 透過代理處理使用者查詢
         await call_agent_async(runner, USER_ID, SESSION_ID, user_input)
 
-    # ===== PART 6: State Examination =====
-    # Show final session state
+    # ===== 第六部分：狀態檢查 =====
+    # 顯示最終會話狀態
     final_session = session_service.get_session(
         app_name=APP_NAME, user_id=USER_ID, session_id=SESSION_ID
     )
-    print("\nFinal Session State:")
+    print("\n最終會話狀態：")
     for key, value in final_session.state.items():
         print(f"{key}: {value}")
 
 
 def main():
-    """Entry point for the application."""
+    """應用程式的進入點。"""
     asyncio.run(main_async())
 
 

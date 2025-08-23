@@ -1,7 +1,6 @@
-"""
-LinkedIn Post Agent Subagents Package
+"""LinkedIn 貼文代理子代理套件
 
-This package provides all subagents used in the LinkedIn post generation system.
+此套件提供 LinkedIn 貼文生成系統中使用的所有子代理。
 """
 
 from .post_generator import initial_post_generator

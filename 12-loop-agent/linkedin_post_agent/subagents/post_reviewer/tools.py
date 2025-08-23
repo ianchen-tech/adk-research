@@ -27,8 +27,8 @@ def count_characters(text: str, tool_context: ToolContext) -> Dict[str, Any]:
     MIN_LENGTH = 1000
     MAX_LENGTH = 1500
 
-    print("\n----------- TOOL DEBUG -----------")
-    print(f"Checking text length: {char_count} characters")
+    print("\n----------- 工具除錯 -----------")
+    print(f"檢查文字長度：{char_count} 字元")
     print("----------------------------------\n")
 
     if char_count < MIN_LENGTH:
@@ -38,7 +38,7 @@ def count_characters(text: str, tool_context: ToolContext) -> Dict[str, Any]:
             "result": "fail",
             "char_count": char_count,
             "chars_needed": chars_needed,
-            "message": f"Post is too short. Add {chars_needed} more characters to reach minimum length of {MIN_LENGTH}.",
+            "message": f"貼文太短。需要增加 {chars_needed} 個字元以達到最小長度 {MIN_LENGTH}。",
         }
     elif char_count > MAX_LENGTH:
         chars_to_remove = char_count - MAX_LENGTH
@@ -47,14 +47,14 @@ def count_characters(text: str, tool_context: ToolContext) -> Dict[str, Any]:
             "result": "fail",
             "char_count": char_count,
             "chars_to_remove": chars_to_remove,
-            "message": f"Post is too long. Remove {chars_to_remove} characters to meet maximum length of {MAX_LENGTH}.",
+            "message": f"貼文太長。需要移除 {chars_to_remove} 個字元以符合最大長度 {MAX_LENGTH}。",
         }
     else:
         tool_context.state["review_status"] = "pass"
         return {
             "result": "pass",
             "char_count": char_count,
-            "message": f"Post length is good ({char_count} characters).",
+            "message": f"貼文長度良好（{char_count} 字元）。",
         }
 
 
@@ -69,9 +69,9 @@ def exit_loop(tool_context: ToolContext) -> Dict[str, Any]:
     Returns:
         空字典
     """
-    print("\n----------- EXIT LOOP TRIGGERED -----------")
-    print("Post review completed successfully")
-    print("Loop will exit now")
+    print("\n----------- 退出循環已觸發 -----------")
+    print("貼文審查成功完成")
+    print("循環即將退出")
     print("------------------------------------------\n")
 
     tool_context.actions.escalate = True

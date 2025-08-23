@@ -1,7 +1,6 @@
-"""
-LinkedIn Post Generator Agent Package
+"""LinkedIn 貼文生成器代理套件
 
-This package provides an agent for generating the initial LinkedIn post.
+此套件提供用於生成初始 LinkedIn 貼文的代理。
 """
 
 from .agent import initial_post_generator

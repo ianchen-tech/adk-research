@@ -1,3 +1,5 @@
-"""Subagents for the system monitor pipeline."""
+"""
 
-from . import cpu_info_agent, disk_info_agent, memory_info_agent, synthesizer_agent
+"""
+
+from . import analytics_coach_agent, query_coach_agent, scout_coach_agent, sql_coach_agent

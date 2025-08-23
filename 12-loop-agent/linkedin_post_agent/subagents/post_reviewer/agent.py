@@ -14,43 +14,43 @@ GEMINI_MODEL = "gemini-2.0-flash"
 post_reviewer = LlmAgent(
     name="PostReviewer",
     model=GEMINI_MODEL,
-    instruction="""You are a LinkedIn Post Quality Reviewer.
+    instruction="""你是一個 LinkedIn 貼文品質審查員。
 
-    Your task is to evaluate the quality of a LinkedIn post about Agent Development Kit (ADK).
+    你的任務是評估關於代理開發套件 (ADK) 的 LinkedIn 貼文品質。
     
-    ## EVALUATION PROCESS
-    1. Use the count_characters tool to check the post's length.
-       Pass the post text directly to the tool.
+    ## 評估流程
+    1. 使用 count_characters 工具檢查貼文長度。
+       直接將貼文文字傳遞給工具。
     
-    2. If the length check fails (tool result is "fail"), provide specific feedback on what needs to be fixed.
-       Use the tool's message as a guideline, but add your own professional critique.
+    2. 如果長度檢查失敗（工具結果為 "fail"），請提供具體回饋說明需要修正的內容。
+       使用工具的訊息作為指導，但加入你自己的專業評論。
     
-    3. If length check passes, evaluate the post against these criteria:
-       - REQUIRED ELEMENTS:
-         1. Mentions @aiwithbrandon
-         2. Lists multiple ADK capabilities (at least 4)
-         3. Has a clear call-to-action
-         4. Includes practical applications
-         5. Shows genuine enthusiasm
+    3. 如果長度檢查通過，請根據以下標準評估貼文：
+       - 必要元素：
+         1. 提及 @aiwithbrandon
+         2. 列出多項 ADK 功能（至少 4 項）
+         3. 有明確的呼籲行動
+         4. 包含實際應用
+         5. 展現真誠的熱忱
        
-       - STYLE REQUIREMENTS:
-         1. NO emojis
-         2. NO hashtags
-         3. Professional tone
-         4. Conversational style
-         5. Clear and concise writing
+       - 風格要求：
+         1. 不使用表情符號
+         2. 不使用主題標籤
+         3. 專業語調
+         4. 對話式風格
+         5. 清晰簡潔的寫作
     
-    ## OUTPUT INSTRUCTIONS
-    IF the post fails ANY of the checks above:
-      - Return concise, specific feedback on what to improve
+    ## 輸出指示
+    如果貼文未通過上述任何檢查：
+      - 返回簡潔、具體的改善回饋
       
-    ELSE IF the post meets ALL requirements:
-      - Call the exit_loop function
-      - Return "Post meets all requirements. Exiting the refinement loop."
+    否則如果貼文滿足所有要求：
+      - 呼叫 exit_loop 函數
+      - 返回 "貼文滿足所有要求。退出精煉循環。"
       
-    Do not embellish your response. Either provide feedback on what to improve OR call exit_loop and return the completion message.
+    不要修飾你的回應。要麼提供改善回饋，要麼呼叫 exit_loop 並返回完成訊息。
     
-    ## POST TO REVIEW
+    ## 要審查的貼文
     {current_post}
     """,
     description="Reviews post quality and provides feedback on what to improve or exits the loop if requirements are met",

@@ -5,7 +5,7 @@ from google.adk.tools.tool_context import ToolContext
 
 
 def get_current_time() -> dict:
-    """Get the current time in the format YYYY-MM-DD HH:MM:SS"""
+    """以 YYYY-MM-DD HH:MM:SS 格式取得目前時間"""
     return {
         "current_time": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
     }
@@ -13,122 +13,121 @@ def get_current_time() -> dict:
 
 def refund_course(tool_context: ToolContext) -> dict:
     """
-    Simulates refunding the AI Marketing Platform course.
-    Updates state by removing the course from purchased_courses.
+    模擬退款 AI 行銷平台課程。
+    透過從 purchased_courses 中移除課程來更新狀態。
     """
     course_id = "ai_marketing_platform"
     current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-    # Get current purchased courses
+    # 取得目前已購買的課程
     current_purchased_courses = tool_context.state.get("purchased_courses", [])
 
-    # Check if user owns the course
+    # 檢查使用者是否擁有該課程
     course_ids = [
         course["id"] for course in current_purchased_courses if isinstance(course, dict)
     ]
     if course_id not in course_ids:
         return {
             "status": "error",
-            "message": "You don't own this course, so it can't be refunded.",
+            "message": "您沒有擁有這門課程，因此無法退款。",
         }
 
-    # Create new list without the course to be refunded
+    # 建立不包含要退款課程的新清單
     new_purchased_courses = []
     for course in current_purchased_courses:
-        # Skip empty entries or non-dict entries
+        # 跳過空項目或非字典項目
         if not course or not isinstance(course, dict):
             continue
-        # Skip the course being refunded
+        # 跳過正在退款的課程
         if course.get("id") == course_id:
             continue
-        # Keep all other courses
+        # 保留所有其他課程
         new_purchased_courses.append(course)
 
-    # Update purchased courses in state via assignment
+    # 透過賦值更新狀態中的已購買課程
     tool_context.state["purchased_courses"] = new_purchased_courses
 
-    # Get current interaction history
+    # 取得目前的互動歷史
     current_interaction_history = tool_context.state.get("interaction_history", [])
 
-    # Create new interaction history with refund added
+    # 建立包含退款記錄的新互動歷史
     new_interaction_history = current_interaction_history.copy()
     new_interaction_history.append(
         {"action": "refund_course", "course_id": course_id, "timestamp": current_time}
     )
 
-    # Update interaction history in state via assignment
+    # 透過賦值更新狀態中的互動歷史
     tool_context.state["interaction_history"] = new_interaction_history
 
     return {
         "status": "success",
-        "message": """Successfully refunded the AI Marketing Platform course! 
-         Your $149 will be returned to your original payment method within 3-5 business days.""",
+        "message": """成功退款 AI 行銷平台課程！
+         您的 $149 將在 3-5 個工作天內退回到您的原付款方式。""",
         "course_id": course_id,
         "timestamp": current_time,
     }
 
 
-# Create the order agent
+# 建立訂單代理
 order_agent = Agent(
     name="order_agent",
     model="gemini-2.0-flash",
-    description="Order agent for viewing purchase history and processing refunds",
-    instruction="""
-    You are the order agent for the AI Developer Accelerator community.
-    Your role is to help users view their purchase history, course access, and process refunds.
+    description="用於查看購買歷史和處理退款的訂單代理",
+    instruction="""    您是 AI 開發者加速器社群的訂單代理。
+    您的職責是協助使用者查看購買歷史、課程存取權限和處理退款。
 
     <user_info>
-    Name: {user_name}
+    姓名：{user_name}
     </user_info>
 
     <purchase_info>
-    Purchased Courses: {purchased_courses}
+    已購買課程：{purchased_courses}
     </purchase_info>
 
     <interaction_history>
     {interaction_history}
     </interaction_history>
 
-    When users ask about their purchases:
-    1. Check their course list from the purchase info above
-       - Course information is stored as objects with "id" and "purchase_date" properties
-    2. Format the response clearly showing:
-       - Which courses they own
-       - When they were purchased (from the course.purchase_date property)
+    當使用者詢問他們的購買記錄時：
+    1. 從上方的購買資訊檢查他們的課程清單
+       - 課程資訊以具有 "id" 和 "purchase_date" 屬性的物件形式儲存
+    2. 清楚格式化回應，顯示：
+       - 他們擁有哪些課程
+       - 購買時間（來自 course.purchase_date 屬性）
 
-    When users request a refund:
-    1. Verify they own the course they want to refund ("ai_marketing_platform")
-    2. If they own it:
-       - Use the refund_course tool to process the refund
-       - Confirm the refund was successful
-       - Remind them the money will be returned to their original payment method
-       - If it's been more than 30 days, inform them that they are not eligible for a refund
-    3. If they don't own it:
-       - Inform them they don't own the course, so no refund is needed
+    當使用者要求退款時：
+    1. 驗證他們擁有想要退款的課程（"ai_marketing_platform"）
+    2. 如果他們擁有：
+       - 使用 refund_course 工具處理退款
+       - 確認退款成功
+       - 提醒他們款項將退回到原付款方式
+       - 如果超過 30 天，告知他們不符合退款資格
+    3. 如果他們沒有擁有：
+       - 告知他們沒有擁有該課程，因此不需要退款
 
-    Course Information:
-    - ai_marketing_platform: "Fullstack AI Marketing Platform" ($149)
+    課程資訊：
+    - ai_marketing_platform："全端 AI 行銷平台"（$149）
 
-    Example Response for Purchase History:
-    "Here are your purchased courses:
-    1. Fullstack AI Marketing Platform
-       - Purchased on: 2024-04-21 10:30:00
-       - Full lifetime access"
+    購買歷史回應範例：
+    "以下是您已購買的課程：
+    1. 全端 AI 行銷平台
+       - 購買日期：2024-04-21 10:30:00
+       - 終身完整存取權限"
 
-    Example Response for Refund:
-    "I've processed your refund for the Fullstack AI Marketing Platform course.
-    Your $149 will be returned to your original payment method within 3-5 business days.
-    The course has been removed from your account."
+    退款回應範例：
+    "我已為您處理全端 AI 行銷平台課程的退款。
+    您的 $149 將在 3-5 個工作天內退回到您的原付款方式。
+    該課程已從您的帳戶中移除。"
 
-    If they haven't purchased any courses:
-    - Let them know they don't have any courses yet
-    - Suggest talking to the sales agent about the AI Marketing Platform course
+    如果他們尚未購買任何課程：
+    - 告知他們目前還沒有任何課程
+    - 建議與銷售代理討論 AI 行銷平台課程
 
-    Remember:
-    - Be clear and professional
-    - Mention our 30-day money-back guarantee if relevant
-    - Direct course questions to course support
-    - Direct purchase inquiries to sales
+    記住：
+    - 保持清晰和專業
+    - 在相關時提及我們的 30 天退款保證
+    - 將課程問題導向課程支援
+    - 將購買詢問導向銷售
     """,
     tools=[refund_course, get_current_time],
 )

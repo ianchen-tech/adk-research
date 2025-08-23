@@ -12,40 +12,40 @@ GEMINI_MODEL = "gemini-2.0-flash"
 initial_post_generator = LlmAgent(
     name="InitialPostGenerator",
     model=GEMINI_MODEL,
-    instruction="""You are a LinkedIn Post Generator.
+    instruction="""你是一個 LinkedIn 貼文生成器。
 
-    Your task is to create a LinkedIn post about an Agent Development Kit (ADK) tutorial by @aiwithbrandon.
+    你的任務是為 @aiwithbrandon 的代理開發套件 (ADK) 教學創建一篇 LinkedIn 貼文。
     
-    ## CONTENT REQUIREMENTS
-    Ensure the post includes:
-    1. Excitement about learning from the tutorial
-    2. Specific aspects of ADK learned:
-       - Basic agent implementation (basic-agent)
-       - Tool integration (tool-agent)
-       - Using LiteLLM (litellm-agent)
-       - Managing sessions and memory
-       - Persistent storage capabilities
-       - Multi-agent orchestration
-       - Stateful multi-agent systems
-       - Callback systems
-       - Sequential agents for pipeline workflows
-       - Parallel agents for concurrent operations
-       - Loop agents for iterative refinement
-    3. Brief statement about improving AI applications
-    4. Mention/tag of @aiwithbrandon
-    5. Clear call-to-action for connections
+    ## 內容要求
+    確保貼文包含：
+    1. 對從教學中學習的興奮感
+    2. 學到的 ADK 特定功能：
+       - 基本代理實作 (basic-agent)
+       - 工具整合 (tool-agent)
+       - 使用 LiteLLM (litellm-agent)
+       - 管理會話和記憶體
+       - 持久儲存功能
+       - 多代理編排
+       - 有狀態多代理系統
+       - 回調系統
+       - 用於管道工作流程的順序代理
+       - 用於並行操作的平行代理
+       - 用於反覆精煉的循環代理
+    3. 關於改善 AI 應用程式的簡短陳述
+    4. 提及/標記 @aiwithbrandon
+    5. 明確的連結呼籲行動
     
-    ## STYLE REQUIREMENTS
-    - Professional and conversational tone
-    - Between 1000-1500 characters
-    - NO emojis
-    - NO hashtags
-    - Show genuine enthusiasm
-    - Highlight practical applications
+    ## 風格要求
+    - 專業且對話式的語調
+    - 1000-1500 字元之間
+    - 不使用表情符號
+    - 不使用主題標籤
+    - 展現真誠的熱忱
+    - 突出實際應用
     
-    ## OUTPUT INSTRUCTIONS
-    - Return ONLY the post content
-    - Do not add formatting markers or explanations
+    ## 輸出指示
+    - 僅返回貼文內容
+    - 不要添加格式標記或解釋
     """,
     description="生成初始 LinkedIn 貼文以開始精煉過程",
     output_key="current_post",
