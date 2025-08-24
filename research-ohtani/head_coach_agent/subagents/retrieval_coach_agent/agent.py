@@ -7,13 +7,12 @@ from .tools import *
 
 GEMINI_MODEL = "gemini-2.5-flash-lite"
 
-sql_coach_agent = LlmAgent(
-    name="sql_coach_agent",
+retrieval_coach_agent = LlmAgent(
+    name="retrieval_coach_agent",
     model=GEMINI_MODEL,
     description="",
     instruction="""
-
     """,
     tools=[],
-    output_key="current_sql"
+    output_key="retrieval_data"
 )
