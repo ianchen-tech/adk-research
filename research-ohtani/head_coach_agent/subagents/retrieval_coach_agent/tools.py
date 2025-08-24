@@ -1,28 +1,70 @@
-"""LinkedIn 貼文審查器代理工具
+"""
 
-此模組提供分析和驗證 LinkedIn 貼文的工具。
 """
 
 from typing import Any, Dict
+from google.adk.tools.tool_context import ToolContext
 
 
-def count_characters(text: str) -> Dict[str, Any]:
+def retrieve_schema_and_example(text: str, tool_context: ToolContext) -> Dict[str, Any]:
     """
-    計算提供文字中的字元數並提供基於長度的回饋工具。
-    根據長度要求更新狀態中的 review_status。
+    根據使用者的問題，提供相關的 schema 及範例。
 
     Args:
-        text: 要分析字元數的文字
+        text: 使用者的問題，將此進行 embedding 並搜尋相關的 schema 及範例
 
     Returns:
         Dict[str, Any]: 包含以下內容的字典：
-            - result: 'fail' 或 'pass'
-            - schema: 
-            - examples: 
+            - result: 'failed' 或 'success'
+            - schema: schema 內容及說明
+            - examples: sql 範例
     """
 
+    tool_context.state["review_feedback"] = ""
+
     return {
-        "result": "pass",
-        "schema": "",
-        "examples": "",
+        "result": "success",
+        "schema": """
+```sql
+CREATE TABLE batting_game_logs (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    recent_game_rank INTEGER,
+    opponent TEXT,
+    score TEXT,
+    game_type TEXT,
+    at_bats INTEGER,
+    runs INTEGER,
+    hits INTEGER,
+    doubles INTEGER,
+    triples INTEGER,
+    home_runs INTEGER,
+    rbis INTEGER,
+    walks INTEGER,
+    strikeouts INTEGER,
+    stolen_bases INTEGER,
+    caught_stealing INTEGER,
+    batting_avg REAL,
+    obp REAL,
+    slg REAL,
+    ops REAL
+);
+```
+        """,
+        "examples": """
+```sql
+-- 查看最近5場打擊表現
+SELECT 
+    recent_game_rank,
+    opponent,
+    at_bats,
+    hits,
+    home_runs,
+    rbis,
+    batting_avg,
+    ops
+FROM batting_game_logs 
+ORDER BY recent_game_rank ASC 
+LIMIT 5;
+```
+        """,
     }

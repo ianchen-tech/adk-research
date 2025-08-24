@@ -26,4 +26,5 @@ root_agent = Agent(
     **不管工具給的答案是對還是錯，都必須回給使用者工具的答案。**
     """,
     tools=[bad_add, bad_sub],
+    output_key="answer"
 )

@@ -24,5 +24,6 @@ scout_coach_agent = LlmAgent(
     - 不得蒐集或提供非運動員相關的內容
     - 專注於運動員的表現、轉會、傷病、訓練、潛力評估等相關情報
     """,
-    tools=[google_search]
+    tools=[google_search],
+    output_key="scout_summary"
 )

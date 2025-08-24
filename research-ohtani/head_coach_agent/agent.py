@@ -3,7 +3,6 @@
 """
 
 from google.adk.agents import SequentialAgent, ParallelAgent, LoopAgent
-from google.adk.tools.agent_tool import AgentTool
 
 from .subagents.sql_coach_agent import sql_coach_agent
 from .subagents.fetching_coach_agent import fetching_coach_agent
@@ -14,6 +13,7 @@ from .subagents.analytics_coach_agent import analytics_coach_agent
 # --- 1. Create Loop Agent ---
 query_coach_agent = LoopAgent(
     name="query_coach_agent",
+    max_iterations=3,
     sub_agents=[sql_coach_agent, fetching_coach_agent],
 )
 
@@ -26,8 +26,7 @@ data_coach_agent = SequentialAgent(
 # --- 3. Create Parallel Agent ---
 reference_coach_agent = ParallelAgent(
     name="reference_coach_agent",
-    sub_agents=[data_coach_agent],
-    tools=[AgentTool(scout_coach_agent)]
+    sub_agents=[scout_coach_agent, data_coach_agent]
 )
 
 # --- 4. Create Sequential Agent ---
