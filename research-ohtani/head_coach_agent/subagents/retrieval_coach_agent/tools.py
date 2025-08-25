@@ -14,7 +14,7 @@ def set_default_review_feedback(tool_context: ToolContext) -> None:
     用於確保後續 sql_coach_agent 代理可正常執行代理。
 
     Args:
-        tool_context: 工具執行的上下文
+        tool_context: 工具調用的上下文環境，這裡用來設置狀態
 
     Returns:
         None

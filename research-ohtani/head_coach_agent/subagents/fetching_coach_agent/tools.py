@@ -16,7 +16,7 @@ def execute_sql(sql: str, tool_context: ToolContext) -> Dict[str, Any]:
 
     Args:
         sql: 要執行的 SQL
-        tool_context: 工具執行的上下文
+        tool_context: 工具調用的上下文環境，這裡用來設置狀態
 
     Returns:
         Dict[str, Any]: 包含以下內容的字典：
@@ -76,7 +76,7 @@ def exit_loop(query_result: Dict[str, Any], tool_context: ToolContext) -> Dict[s
 
     Args:
         query_result: execute_sql 工具的返回結果
-        tool_context: 工具執行的上下文
+        tool_context: 工具調用的上下文環境，這裡用來設置狀態
 
     Returns:
         空字典
