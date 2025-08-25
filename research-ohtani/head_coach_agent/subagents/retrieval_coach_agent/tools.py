@@ -6,7 +6,23 @@ from typing import Any, Dict
 from google.adk.tools.tool_context import ToolContext
 
 
-def retrieve_schema_and_example(text: str, tool_context: ToolContext) -> Dict[str, Any]:
+def set_default_review_feedback(tool_context: ToolContext) -> None:
+    """
+    設置預設的審查回饋狀態。
+
+    此函數將 review_feedback 狀態初始化為空字串，
+    用於確保後續 sql_coach_agent 代理可正常執行代理。
+
+    Args:
+        tool_context: 工具執行的上下文
+
+    Returns:
+        None
+    """
+    tool_context.state["review_feedback"] = ""
+
+
+def retrieve_schema_and_example(text: str) -> Dict[str, Any]:
     """
     根據使用者的問題，提供相關的 schema 及範例。
 
@@ -19,8 +35,6 @@ def retrieve_schema_and_example(text: str, tool_context: ToolContext) -> Dict[st
             - schema: schema 內容及說明
             - examples: sql 範例
     """
-
-    tool_context.state["review_feedback"] = ""
 
     return {
         "result": "success",

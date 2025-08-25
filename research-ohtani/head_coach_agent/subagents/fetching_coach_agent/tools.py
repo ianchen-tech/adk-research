@@ -16,6 +16,7 @@ def execute_sql(sql: str, tool_context: ToolContext) -> Dict[str, Any]:
 
     Args:
         sql: 要執行的 SQL
+        tool_context: 工具執行的上下文
 
     Returns:
         Dict[str, Any]: 包含以下內容的字典：
