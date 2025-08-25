@@ -69,16 +69,21 @@ def execute_sql(sql: str, tool_context: ToolContext) -> Dict[str, Any]:
         }
 
 
-def exit_loop(tool_context: ToolContext) -> Dict[str, Any]:
+def exit_loop(query_result: Dict[str, Any], tool_context: ToolContext) -> Dict[str, Any]:
     """
-    確認成功執行 SQL 查詢並且已取得使用者所需資料，以此工具結束循環。
+    確認成功執行 SQL 查詢並且已取得使用者所需資料，將結果存儲並結束循環。
 
     Args:
+        query_result: execute_sql 工具的返回結果
         tool_context: 工具執行的上下文
 
     Returns:
         空字典
     """
-
+    
+    # 將 SQL 查詢結果存儲到 state 中，供後續 agent 使用
+    tool_context.state["query_data"] = query_result
+    
+    # 設置 escalate 來結束循環
     tool_context.actions.escalate = True
     return {}

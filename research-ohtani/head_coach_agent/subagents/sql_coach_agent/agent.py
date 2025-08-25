@@ -4,7 +4,7 @@
 
 from google.adk.agents.llm_agent import LlmAgent
 
-GEMINI_MODEL = "gemini-2.5-flash-lite"
+GEMINI_MODEL = "gemini-2.5-flash"
 
 sql_coach_agent = LlmAgent(
     name="sql_coach_agent",

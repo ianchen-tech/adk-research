@@ -5,7 +5,7 @@
 from google.adk.agents.llm_agent import LlmAgent
 from .tools import retrieve_schema_and_example
 
-GEMINI_MODEL = "gemini-2.5-flash-lite"
+GEMINI_MODEL = "gemini-2.5-flash"
 
 retrieval_coach_agent = LlmAgent(
     name="retrieval_coach_agent",
