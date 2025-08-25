@@ -32,4 +32,5 @@ fetching_coach_agent = LlmAgent(
     - 失敗或不符合需求的情況下，不需要特別處理，讓循環自然繼續或由上層處理
     """,
     tools=[execute_sql, exit_loop],
+    output_key="query_data"
 )
