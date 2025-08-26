@@ -2,44 +2,39 @@ from dotenv import load_dotenv
 import os
 import chromadb
 from google import genai
-from typing import List, Dict, Any
+from chromadb import Documents, EmbeddingFunction, Embeddings
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 env_path = os.path.join(current_dir, '..', '..', '..', '.env')
 load_dotenv(env_path)
 
-class GeminiEmbedder:
+class GeminiEmbeddingFunction(EmbeddingFunction):
+    """自定義的 Gemini 嵌入函數類"""
     
-    def __init__(self):
-        """初始化 ChromaDB 和 Gemini API"""
+    def __init__(self, model_name: str = "gemini-embedding-001"):
+        self.genai_client = genai.Client()
+        self.model_name = model_name
+    
+    def __call__(self, input: Documents) -> Embeddings:
+        """將文檔列表轉換為嵌入向量列表"""
+        response = self.genai_client.models.embed_content(
+            model=self.model_name,
+            contents=input
+        )
+        return response.embeddings[0].values
 
-        # 從環境變數獲取 API 金鑰
-        api_key = os.getenv('GEMINI_API_KEY')
-        if not api_key:
-            raise ValueError("請設置 GEMINI_API_KEY 環境變數")
-        
-        # 初始化 Gemini 客戶端
-        self.genai_client = genai.Client(api_key=api_key)
+class GeminiEmbedder:
+    def __init__(self):
+        """初始化 ChromaDB"""
         
         # 創建 ChromaDB 客戶端
-        self.client = chromadb.PersistentClient(path="./vector_db")
+        self.client = chromadb.PersistentClient(path="./chroma_db")
         
-        # 創建文檔集合
+        # 創建文檔集合，使用自定義嵌入函數
         self.collection = self.client.get_or_create_collection(
-            name="documents"
+            name="documents",
+            embedding_function=GeminiEmbeddingFunction()
         )
-    
-    def get_embedding(self, text: str) -> List[float]:
-        """使用 Gemini API 獲取文本嵌入向量"""
-        try:
-            result = self.genai_client.models.embed_content(
-                model="gemini-embedding-001",
-                contents=text
-            )
-            return result.embeddings[0].values
-        except Exception as e:
-            print(f"獲取嵌入向量時出錯: {e}")
-            return []
     
     def add_file(self, file_path):
         """添加一個 markdown 文件到資料庫"""
@@ -50,19 +45,12 @@ class GeminiEmbedder:
         # 獲取文件名作為 ID
         file_name = os.path.basename(file_path)
         
-        # 獲取嵌入向量
-        embedding = self.get_embedding(content)
-        
-        if embedding:
-            # 添加到資料庫
-            self.collection.add(
-                embeddings=[embedding],
-                documents=[content],
-                ids=[file_name]
-            )
-            print(f"已添加文件: {file_name}")
-        else:
-            print(f"無法為文件 {file_name} 生成嵌入向量")
+        # 添加到資料庫
+        self.collection.add(
+            documents=[content],
+            ids=[file_name]
+        )
+        print(f"已添加文件: {file_name}")
     
     def add_folder(self, folder_path):
         """添加整個資料夾的 markdown 文件"""
@@ -73,16 +61,9 @@ class GeminiEmbedder:
     
     def search(self, question, num_results=3):
         """搜索相關文檔"""
-        # 獲取查詢的嵌入向量
-        query_embedding = self.get_embedding(question)
-        
-        if not query_embedding:
-            print("無法為查詢生成嵌入向量")
-            return
-        
-        # 在 ChromaDB 中搜索
+        # 查詢向量
         results = self.collection.query(
-            query_embeddings=[query_embedding],
+            query_texts=[question],
             n_results=num_results
         )
         
@@ -119,3 +100,5 @@ if __name__ == "__main__":
     # 4. 測試搜索
     embedder.search("近五場打擊率多少")
     embedder.search("去年投了幾次三振")
+
+# https://ai.google.dev/gemini-api/docs/embeddings?hl=zh-tw
