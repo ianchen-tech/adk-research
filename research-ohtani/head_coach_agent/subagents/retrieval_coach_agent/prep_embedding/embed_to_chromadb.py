@@ -2,24 +2,28 @@ from dotenv import load_dotenv
 import os
 import chromadb
 from google import genai
+from google.genai import types
 from chromadb import Documents, EmbeddingFunction, Embeddings
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 env_path = os.path.join(current_dir, '..', '..', '..', '.env')
 load_dotenv(env_path)
 
+client = genai.Client()
+
 class GeminiEmbeddingFunction(EmbeddingFunction):
     """自定義的 Gemini 嵌入函數類"""
     
-    def __init__(self, model_name: str = "gemini-embedding-001"):
-        self.genai_client = genai.Client()
-        self.model_name = model_name
-    
     def __call__(self, input: Documents) -> Embeddings:
         """將文檔列表轉換為嵌入向量列表"""
-        response = self.genai_client.models.embed_content(
-            model=self.model_name,
-            contents=input
+        EMBEDDING_MODEL_ID = "gemini-embedding-001"
+        response = client.models.embed_content(
+            model=EMBEDDING_MODEL_ID,
+            contents=input,
+            config=types.EmbedContentConfig(
+                task_type="RETRIEVAL_DOCUMENT",
+                title="檢索"
+            )
         )
         return response.embeddings[0].values
 
@@ -59,7 +63,7 @@ class GeminiEmbedder:
                 file_path = os.path.join(folder_path, file_name)
                 self.add_file(file_path)
     
-    def search(self, question, num_results=3):
+    def search(self, question, num_results=1):
         """搜索相關文檔"""
         # 查詢向量
         results = self.collection.query(
@@ -100,5 +104,3 @@ if __name__ == "__main__":
     # 4. 測試搜索
     embedder.search("近五場打擊率多少")
     embedder.search("去年投了幾次三振")
-
-# https://ai.google.dev/gemini-api/docs/embeddings?hl=zh-tw
