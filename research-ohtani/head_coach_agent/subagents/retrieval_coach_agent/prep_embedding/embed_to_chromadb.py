@@ -81,7 +81,30 @@ class GeminiEmbedder:
     def show_info(self):
         """顯示資料庫信息"""
         count = self.collection.count()
-        print(f"資料庫中共有 {count} 個文檔")
+        print("========================")
+        print(f"\n資料庫中共有 {count} 個文檔")
+        
+        # 如果有文檔，顯示第一筆文檔的詳細資訊
+        if count > 0:
+            sample_data = self.collection.get(
+                limit=1, 
+                include=['documents', 'embeddings', 'metadatas']
+            )
+            
+            doc_id = sample_data['ids'][0]
+            document = sample_data['documents'][0]
+            embedding = sample_data['embeddings'][0]
+            
+            print(f"\n=== 範例文檔詳細資訊 ===")
+            print(f"\n文檔 ID: {doc_id}")
+            
+            print(f"\n原始文本 (前 100 字符):")
+            print(f"\"{document[:100]}{'...' if len(document) > 100 else ''}\"")
+            print(f"完整文本長度: {len(document)} 字符")
+            
+            print(f"\n對應的向量值:")
+            print(f"向量維度: {len(embedding)}")
+            print(f"向量值 (前 10 個維度): \n{embedding[:20]}")
 
 
 if __name__ == "__main__":
