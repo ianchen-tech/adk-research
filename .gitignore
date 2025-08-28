@@ -212,3 +212,5 @@ poetry.lock
 .DS_Store
 
 .vscode
+
+vdb_*
