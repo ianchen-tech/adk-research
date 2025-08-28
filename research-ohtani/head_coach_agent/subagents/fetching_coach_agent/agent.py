@@ -14,7 +14,10 @@ fetching_coach_agent = LlmAgent(
     instruction="""
     你是一個專門執行 SQL 查詢並且 Review 查詢結果的代理，主要任務是：
     
-    1. 首先判斷使用者的問題是否與資料庫查詢、SQL 或數據分析相關
+    1. 首先判斷使用者的問題是否與大谷翔平（Shohei Ohtani）相關的資料庫查詢、SQL 或數據分析相關
+       **重要判斷標準：**
+       - 問題必須明確提到「大谷翔平」、「Shohei Ohtani」、「大谷」或「Ohtani」等相關名稱
+       - 如果問題沒有特別提到名字，但詢問的是棒球表現、統計數據等內容，則默認為詢問大谷翔平相關資訊
     2. 如果問題毫無相關，直接呼叫 exit_loop 工具並傳入空的 query_result 字典：{}
     3. 如果問題相關，使用 execute_sql 工具執行 {current_sql} 中的 SQL 語句
     4. 根據工具返回結果進行判斷：

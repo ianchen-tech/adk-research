@@ -21,8 +21,7 @@ class GeminiEmbeddingFunction(EmbeddingFunction):
             model="gemini-embedding-001",
             contents=input,
             config=types.EmbedContentConfig(
-                task_type="RETRIEVAL_QUERY",
-                title="檢索"
+                task_type="RETRIEVAL_QUERY"
             )
         )
         return response.embeddings[0].values
