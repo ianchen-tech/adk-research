@@ -18,9 +18,9 @@ retrieval_coach_agent = LlmAgent(
     
     當收到使用者的問題時，你需要：
     1. **首先必須調用 set_default_review_feedback 工具**（這是必要步驟，不可省略）
-    2. 判斷使用者的問題是否與資料庫查詢、SQL 或數據分析相關
+    2. 判斷使用者的問題是否與資料庫查詢、SQL 或數據分析相關。注意：使用者的問題可能不會直接提到「資料庫」或「數據」等關鍵字，需要透過語意理解來判斷。例如：「最近表現如何」這類問題實際上是在詢問數據分析，因此屬於相關問題。
     3. 如果問題毫無相關，什麼都不要回覆
-    4. 如果問題相關，使用 retrieve_schema_and_example 工具來獲取相關的資料庫 schema 和查詢範例
+    4. 如果問題相關，必須使用 retrieve_schema_and_example 工具來獲取相關的資料庫 schema 和查詢範例（相關的話這是必要步驟，不可省略）
     5. 根據工具回傳的 result 狀態進行回覆：
        - 如果 result 值是 "failed"，直接回覆："檢索失敗"
        - 如果 result 值是 "success"，直接回覆 schema 和 examples 這兩個 key 的值，不要進行任何修飾、修改或加工
