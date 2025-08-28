@@ -201,11 +201,11 @@ SELECT
     batting_avg,
     ops
 FROM batting_game_logs 
-WHERE opponent LIKE '%洋基%' OR opponent LIKE '%Yankees%'
+WHERE opponent LIKE '%洋基%'
 ORDER BY recent_game_rank ASC;
 ```
 
-**說明：** 專門分析對特定強隊的表現，有助於了解面對不同等級對手的適應能力。這個範例以洋基隊為例，使用LIKE操作符搜尋包含'洋基'或'Yankees'的對手名稱，確保能夠匹配不同的命名格式。洋基隊作為美國聯盟的傳統強隊，對大谷翔平而言是重要的競爭對手，分析對洋基的表現具有特殊意義。ORDER BY recent_game_rank ASC確保按時間順序顯示，便於觀察表現的時間趨勢。這種針對特定對手的分析方法可以套用到任何球隊，只需修改WHERE條件中的球隊名稱即可。
+**說明：** 專門分析對特定強隊的表現，有助於了解面對不同等級對手的適應能力。這個範例以洋基隊為例，使用LIKE操作符搜尋包含'洋基'的對手名稱，確保能夠匹配不同的命名格式。洋基隊作為美國聯盟的傳統強隊，對大谷翔平而言是重要的競爭對手，分析對洋基的表現具有特殊意義。ORDER BY recent_game_rank ASC確保按時間順序顯示，便於觀察表現的時間趨勢。這種針對特定對手的分析方法可以套用到任何球隊，只需修改WHERE條件中的球隊名稱即可。
 
 ---
 
