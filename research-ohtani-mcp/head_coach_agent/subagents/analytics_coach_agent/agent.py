@@ -1,6 +1,5 @@
-"""Analytics Coach Agent
+"""
 
-分析教練代理，專門整合情蒐資料與數據庫查詢結果，提供綜合性的運動員分析報告
 """
 
 from google.adk.agents.llm_agent import LlmAgent

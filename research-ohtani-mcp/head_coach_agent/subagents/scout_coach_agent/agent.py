@@ -1,6 +1,5 @@
-"""Scout Coach Agent
+"""
 
-情蒐教練代理，專門進行運動員相關的情報蒐集與總結
 """
 
 from google.adk.agents.llm_agent import LlmAgent

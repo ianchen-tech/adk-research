@@ -1,18 +1,16 @@
 import asyncio
 import json
-import logging  # 新增日誌功能
+import logging
 import os
-import sqlite3  # 用於資料庫操作
+import sqlite3
 
 import mcp.server.stdio  # 用於作為 stdio 伺服器運行
 from dotenv import load_dotenv
 
-# ADK 工具匯入
 from google.adk.tools.function_tool import FunctionTool
 from google.adk.tools.mcp_tool.conversion_utils import adk_to_mcp_tool_type
 
-# MCP 伺服器匯入
-from mcp import types as mcp_types  # 使用別名避免衝突
+from mcp import types as mcp_types
 from mcp.server.lowlevel import NotificationOptions, Server
 from mcp.server.models import InitializationOptions
 
@@ -29,8 +27,8 @@ logging.basicConfig(
 )
 # --- 日誌設定結束 ---
 
-# 指向本地的 ohtani_stats.db
-DATABASE_PATH = os.path.join(os.path.dirname(__file__), "ohtani_stats.db")
+# 指向本地的 stats.db
+DATABASE_PATH = os.path.join(os.path.dirname(__file__), "stats.db")
 
 
 # --- 資料庫工具函數 ---
@@ -63,7 +61,7 @@ def list_db_tables(dummy_param: str) -> dict:
         }
     except sqlite3.Error as e:
         return {"success": False, "message": f"列出表格時發生錯誤：{e}", "tables": []}
-    except Exception as e:  # 捕獲任何其他意外錯誤
+    except Exception as e:
         return {
             "success": False,
             "message": f"列出表格時發生意外錯誤：{e}",
@@ -136,10 +134,10 @@ def execute_sql_query(sql_query: str) -> list[dict]:
 # --- MCP 伺服器設定 ---
 logging.info(
     "正在為 Ohtani SQLite 資料庫建立 MCP 伺服器實例..."
-) # 將 print 改為 logging.info
+)
 app = Server("ohtani-sqlite-mcp-server")
 
-# 將資料庫工具函數包裝為 ADK FunctionTools（只保留查詢相關功能）
+# 將資料庫工具函數包裝為 ADK FunctionTools
 ADK_DB_TOOLS = {
     "list_db_tables": FunctionTool(func=list_db_tables),
     "get_table_schema": FunctionTool(func=get_table_schema),
@@ -153,14 +151,14 @@ async def list_mcp_tools() -> list[mcp_types.Tool]:
     """列出此伺服器公開工具的 MCP 處理程序。"""
     logging.info(
         "MCP 伺服器：收到 list_tools 請求。"
-    ) # 將 print 改為 logging.info
+    )
     mcp_tools_list = []
     for tool_name, adk_tool_instance in ADK_DB_TOOLS.items():
         if not adk_tool_instance.name:
             adk_tool_instance.name = tool_name
 
         mcp_tool_schema = adk_to_mcp_tool_type(adk_tool_instance)
-        logging.info(  # 將 print 改為 logging.info
+        logging.info(
             f"MCP 伺服器：廣告工具：{mcp_tool_schema.name}，輸入架構：{mcp_tool_schema.inputSchema}"
         )
         mcp_tools_list.append(mcp_tool_schema)
@@ -172,7 +170,7 @@ async def call_mcp_tool(name: str, arguments: dict) -> list[mcp_types.TextConten
     """執行 MCP 客戶端請求的工具呼叫的 MCP 處理程序。"""
     logging.info(
         f"MCP 伺服器：收到對 '{name}' 的 call_tool 請求，參數：{arguments}"
-    ) # 將 print 改為 logging.info
+    ) 
 
     if name in ADK_DB_TOOLS:
         adk_tool_instance = ADK_DB_TOOLS[name]
@@ -181,7 +179,7 @@ async def call_mcp_tool(name: str, arguments: dict) -> list[mcp_types.TextConten
                 args=arguments,
                 tool_context=None,  # type: ignore
             )
-            logging.info(  # 將 print 改為 logging.info
+            logging.info(  
                 f"MCP 伺服器：ADK 工具 '{name}' 已執行。回應：{adk_tool_response}"
             )
             response_text = json.dumps(adk_tool_response, indent=2)
@@ -190,7 +188,7 @@ async def call_mcp_tool(name: str, arguments: dict) -> list[mcp_types.TextConten
         except Exception as e:
             logging.error(
                 f"MCP 伺服器：執行 ADK 工具 '{name}' 時發生錯誤：{e}", exc_info=True
-            ) # 將 print 改為 logging.error，新增 exc_info
+            )
             error_payload = {
                 "success": False,
                 "message": f"執行工具 '{name}' 失敗：{str(e)}",
@@ -200,7 +198,7 @@ async def call_mcp_tool(name: str, arguments: dict) -> list[mcp_types.TextConten
     else:
         logging.warning(
             f"MCP 伺服器：此伺服器找不到/未公開工具 '{name}'。"
-        ) # 將 print 改為 logging.warning
+        )
         error_payload = {
             "success": False,
             "message": f"此伺服器未實作工具 '{name}'。",
@@ -215,7 +213,7 @@ async def run_mcp_stdio_server():
     async with mcp.server.stdio.stdio_server() as (read_stream, write_stream):
         logging.info(
             "MCP Stdio 伺服器：開始與客戶端握手..."
-        ) # 將 print 改為 logging.info
+        ) 
         await app.run(
             read_stream,
             write_stream,
@@ -230,24 +228,24 @@ async def run_mcp_stdio_server():
         )
         logging.info(
             "MCP Stdio 伺服器：執行迴圈結束或客戶端已斷線。"
-        )  # Changed print to logging.info
+        ) 
 
 
 if __name__ == "__main__":
     logging.info(
         "Launching Ohtani SQLite DB MCP Server via stdio..."
-    )  # Changed print to logging.info
+    ) 
     try:
         asyncio.run(run_mcp_stdio_server())
     except KeyboardInterrupt:
         logging.info(
             "\nMCP Server (stdio) stopped by user."
-        )  # Changed print to logging.info
+        ) 
     except Exception as e:
         logging.critical(
             f"MCP Server (stdio) encountered an unhandled error: {e}", exc_info=True
-        )  # Changed print to logging.critical, added exc_info
+        )
     finally:
         logging.info(
             "MCP Server (stdio) process exiting."
-        )  # Changed print to logging.info
+        ) 
