@@ -22,7 +22,7 @@ logging.basicConfig(
     level=logging.DEBUG,
     format="%(asctime)s - %(levelname)s - [%(filename)s:%(lineno)d] - %(message)s",
     handlers=[
-        logging.FileHandler(LOG_FILE_PATH, mode="w"),
+        logging.FileHandler(LOG_FILE_PATH, mode="w", encoding="utf-8"),
     ],
 )
 # --- 日誌設定結束 ---
@@ -248,4 +248,4 @@ if __name__ == "__main__":
     finally:
         logging.info(
             "MCP Server (stdio) process exiting."
-        ) 
+        )
