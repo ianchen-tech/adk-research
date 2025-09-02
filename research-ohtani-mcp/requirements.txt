@@ -1,0 +1,10 @@
+# MCP Server dependencies
+mcp>=1.0.0
+sqlite3
+
+# ADK dependencies
+google-adk
+
+# Additional dependencies
+typing-extensions
+loguru
